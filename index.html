@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Ofrenda by TechnoLatinas</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Carter+One&family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    :root{
+      /* Colores mexicanos inspirados en la ofrenda */
+      --papel-picado-rosa:#ff2aa1; /* rosa mexicano */
+      --papel-picado-morado:#7c3aed; /* morado */
+      --papel-picado-azul:#06b6d4; /* azul turquesa */
+      --papel-picado-verde:#16a34a;
+      --cempasuchil:#f59e0b; /* naranja cempasúchil */
+      --celosia:#ff00a6; /* rosa intenso celosia */
+      --verde:#16a34a; /* hojas */
+      --veladora:#fef3c7; /* luz de vela */
+      --fondo:#110b2b; /* noche morada */
+      --fondo-osc:#0b061d;
+      --tinta:#fefefe; /* texto */
+      --acento:#ff7a59; /* acento cálido */
+    }
+    body {
+      background: radial-gradient(1200px 600px at 50% -200px, #2a1b69 0%, var(--fondo) 60%), var(--fondo-osc);
+      color: var(--tinta);
+      overflow-x: hidden;
+    }
+    .title { font-family: 'Carter One', system-ui; }
+    .copy { font-family: 'Inter', ui-sans-serif, system-ui; }
+    .paper-shadow { filter: drop-shadow(0 8px 0 rgba(0,0,0,.25)) drop-shadow(0 14px 24px rgba(0,0,0,.35)); }
+    .altar { background: linear-gradient(180deg, rgba(255,255,255,.02), rgba(255,255,255,.0)); border: 1px solid rgba(255,255,255,.08); }
+    .of-tooltip { pointer-events:none; opacity:0; transform: translateY(6px) scale(.98); transition: .2s ease; }
+    .skull-wrap:hover .of-tooltip, .skull-wrap[data-locked="true"] .of-tooltip { opacity:1; transform: translateY(0) scale(1); }
+    .name-band text { font-family: 'Carter One', system-ui; letter-spacing:.5px; }
+    .selectable:hover { transform: translateY(-2px) rotate(-1deg); }
+    .btn { background: var(--acento); }
+    .btn:hover { filter: brightness(1.05); }
+
+    /* Stars */
+    #stars { position:absolute; inset:0; pointer-events:none; z-index:0; }
+    .twinkle { animation: twinkle 2.2s infinite ease-in-out; opacity:.8 }
+    @keyframes twinkle { 0%,100%{opacity:.2} 50%{opacity:1} }
+
+    /* Candle flicker */
+    .flame { animation: flicker 1.3s infinite steps(2,end); transform-origin: center; }
+    @keyframes flicker { 0%{opacity:.85; transform: translateY(0)} 50%{opacity:.6; transform: translateY(-1px)} 100%{opacity:.9; transform: translateY(0)} }
+  </style>
+</head>
+<body class="copy">
+
+  <!-- Stars layer -->
+  <svg id="stars" viewBox="0 0 100 100" preserveAspectRatio="none">
+    <g fill="#fff">
+      <circle class="twinkle" cx="5" cy="10" r=".4"/>
+      <circle class="twinkle" cx="20" cy="6" r=".5"/>
+      <circle class="twinkle" cx="35" cy="12" r=".4"/>
+      <circle class="twinkle" cx="55" cy="5" r=".5"/>
+      <circle class="twinkle" cx="75" cy="11" r=".45"/>
+      <circle class="twinkle" cx="90" cy="7" r=".35"/>
+      <circle class="twinkle" cx="12" cy="18" r=".4"/>
+      <circle class="twinkle" cx="28" cy="20" r=".5"/>
+      <circle class="twinkle" cx="46" cy="17" r=".4"/>
+      <circle class="twinkle" cx="70" cy="20" r=".45"/>
+      <circle class="twinkle" cx="84" cy="18" r=".35"/>
+    </g>
+  </svg>
+
+  <main class="relative max-w-7xl mx-auto px-6 md:px-10 z-10">
+    <!-- Single curved papel picado garland (top) -->
+    <section id="garlandHost" class="mt-0"></section>
+
+    <header class="text-center pt-4 md:pt-6">
+      <h1 class="title text-3xl sm:text-4xl md:text-5xl drop-shadow-md">Ofrenda de Día de Muertos</h1>
+      <p class="mt-2 text-sm md:text-base opacity-90">Homenaje a mujeres que iluminaron la tecnología.</p>
+    </header>
+
+    <!-- Grid 3x3 -->
+    <section id="grid-wrapper" class="mt-4">
+      <div id="skullGrid" class="relative grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 md:gap-8 z-10">
+        <!-- JS injects each skull card here -->
+      </div>
+      <p class="mt-4 text-center text-xs opacity-80">Pasa el cursor (o toca) una calavera para leer su historia.</p>
+    </section>
+
+    <!-- Candles row under grid -->
+    <section class="mt-6" aria-hidden="true">
+      <div class="flex items-end justify-center gap-6">
+        <div class="relative">
+          <div class="w-8 h-16 bg-white/85 rounded-t-md border border-white/30"></div>
+          <div class="absolute -top-5 left-1/2 -translate-x-1/2">
+            <svg width="22" height="30" viewBox="0 0 22 30">
+              <ellipse cx="11" cy="20" rx="8" ry="4" fill="rgba(255,180,0,.25)"/>
+              <path class="flame" d="M11 2c-2 3-3 5-3 7 0 2 1 4 3 5 2-1 3-3 3-5 0-2-1-4-3-7z" fill="var(--veladora)"/>
+            </svg>
+          </div>
+        </div>
+        <div class="relative scale-110">
+          <div class="w-10 h-20 bg-white/90 rounded-t-md border border-white/30"></div>
+          <div class="absolute -top-6 left-1/2 -translate-x-1/2">
+            <svg width="24" height="34" viewBox="0 0 24 34">
+              <ellipse cx="12" cy="22" rx="9" ry="5" fill="rgba(255,180,0,.25)"/>
+              <path class="flame" d="M12 2c-2 4-4 6-4 9 0 3 2 5 4 6 2-1 4-3 4-6 0-3-2-5-4-9z" fill="var(--veladora)"/>
+            </svg>
+          </div>
+        </div>
+        <div class="relative">
+          <div class="w-8 h-16 bg-white/85 rounded-t-md border border-white/30"></div>
+          <div class="absolute -top-5 left-1/2 -translate-x-1/2">
+            <svg width="22" height="30" viewBox="0 0 22 30">
+              <ellipse cx="11" cy="20" rx="8" ry="4" fill="rgba(255,180,0,.25)"/>
+              <path class="flame" d="M11 2c-2 3-3 5-3 7 0 2 1 4 3 5 2-1 3-3 3-5 0-2-1-4-3-7z" fill="var(--veladora)"/>
+            </svg>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Cempasúchil band under grid -->
+    <section class="mt-6" aria-hidden="true">
+      <div id="flowerRow" class="w-full"></div>
+    </section>
+
+    <footer class="text-center text-xs opacity-80 py-8">Hecho con respeto y cariño por TechnoLatinas 💜 — ¡Que viva la memoria! 🕯️🌼</footer>
+  </main>
+
+  <script>
+  // --- Datos --------------------------------------------------------------
+  const mujeres = [
+    { nombre: 'Ada Lovelace (1815–1852)', bio: 'Primera programadora. Creó el primer algoritmo destinado a ser procesado por una máquina.', contrib: 'Anticipó el software moderno.', theme: { base:'#ffe3ef', ring:'#f59e0b', accent:'#6a1b9a', nose:'heart', band:'#fef3c7' } },
+    { nombre: 'Annie Easley (1933–2011)', bio: 'Científica de la NASA.', contrib: 'Desarrolló e implementó un código informático que analizaba tecnologías de energía alternativa, y facilitó el surgimiento de los cohetes de fase superior denominados Centaur.', theme: { base:'#eef2ff', ring:'#6a1b9a', accent:'#f59e0b', nose:'drop', band:'#fff3cf' } },
+    { nombre: 'Anita Borg (1949–2003)', bio: 'Científica informática.', contrib: 'En 1994 creó la Celebración Grace Hopper de Mujeres en la Informática con el objetivo de apoyar la incorporación de las mujeres a la tecnología.', theme: { base:'#fff0f0', ring:'#e91e63', accent:'#1565c0', nose:'diamond', band:'#fff2cc' } },
+    { nombre: 'Betty Snyder Holberton (1917-2001)', bio: 'Pionera de la computación, una de las seis programadoras originales del ENIAC.', contrib: 'Contribuyó al desarrollo del primer lenguaje de programación y a la invención de los "puntos de interrupción" (breakpoints) para la depuración de software.', theme: { base:'#ffe3ef', ring:'#f59e0b', accent:'#6a1b9a', nose:'heart', band:'#fef3c7' } },
+    { nombre: 'Dorothy Vaughan (1910–2008)', bio: 'Jefa de programación en NACA/NASA.', contrib: 'Pionera en Fortran. Después de convertirse en una experta en programación, el trabajo matemático de Vaughan permitió que John Glenn fuese el primer astronauta estadounidense en hacer una órbita completa de la Tierra.', theme: { base:'#fffbe6', ring:'#f59e0b', accent:'#6a1b9a', nose:'tri-heart', band:'#ffefbf' } },
+    { nombre: 'Grace Hopper (1906–1992)', bio: 'Pionera de compiladores y COBOL.', contrib: 'Construyó el primer compilador. Sus trabajos sentaron las bases para el desarrollo de la informática tal como la conocemos hoy, impulsando la revolución del software.', theme: { base:'#e5f0ff', ring:'#1565c0', accent:'#ff7a59', nose:'spade', band:'#fff4d3' } },
+    { nombre: 'Hedy Lamarr (1914–2000)', bio: 'Inventora del salto de frecuencia.', contrib: 'Base para Wi‑Fi, Bluetooth y GPS.', theme: { base:'#ffeaf7', ring:'#ff00a6', accent:'#16a34a', nose:'diamond', band:'#fff1c2' } },
+    { nombre: 'Katherine Johnson (1918–2020)', bio: 'Matemática, física y científica espacial estadounidense.', contrib: 'Reconocida por sus esenciales cálculos para la NASA que posibilitaron los primeros vuelos espaciales tripulados de EE. UU., incluyendo el exitoso aterrizaje lunar de la misión Apolo 11.', theme: { base:'#eef9ff', ring:'#8dd0ff', accent:'#6a1b9a', nose:'triangle', band:'#fdf5d6' } },
+    { nombre: 'Margaret Hamilton (1936–)', bio: 'Lideró el software de Apolo.', contrib: 'Sistema de prioridades que salvó el alunizaje.', theme: { base:'#fff6e5', ring:'#f59e0b', accent:'#1565c0', nose:'club', band:'#ffe9b5' } }
+  ];
+
+  // --- Calavera generativa ------------------------------------------------
+  function nosePath(type){
+    switch(type){
+      case 'heart': return 'M250 314c-18-24-64 8-36 38 14 14 26 20 36 28 10-8 22-14 36-28 28-30-18-62-36-38z';
+      case 'spade': return 'M250 310c-22 0-42 18-42 40 0 20 16 36 42 52 26-16 42-32 42-52 0-22-20-40-42-40z';
+      case 'diamond': return 'M250 300l-40 60 40 40 40-40-40-60z';
+      case 'triangle': return 'M210 360h80l-40-70-40 70z';
+      case 'club': return 'M234 334a22 22 0 1 1 32 0 22 22 0 1 1-32 0zm16 18l-18 28h36l-18-28z';
+      case 'leaf': return 'M250 320c-38 0-50 48 0 88 50-40 38-88 0-88z';
+      case 'drop': return 'M250 314c-10 18-26 28-26 46s12 30 26 30 26-12 26-30-16-28-26-46z';
+      case 'tri-heart': return 'M250 330l-26 44h52l-26-44zm0-24c-18 0-26 26 0 32 26-6 18-32 0-32z';
+      default: return 'M250 314c-22 0-46 26-46 46 0 18 26 28 46 28s46-10 46-28c0-20-24-46-46-46z';
+    }
+  }
+
+  function petal(cx, cy, r, count, color){
+    const petals = [];
+    for(let k=0;k<count;k++){
+      const t = (Math.PI*2/count)*k;
+      const x = cx + Math.cos(t)*r, y = cy + Math.sin(t)*r;
+      petals.push(`<circle cx="${x}" cy="${y}" r="${Math.max(4, r*0.22)}" fill="${color}"/>`);
+    }
+    return petals.join('');
+  }
+
+  function nameScale(name){
+    const plain = name.split('(')[0].trim();
+    const max = 260; // ancho útil de la banda
+    const approxPerChar = 18; // ancho aproximado a font-size 34 con Carter One
+    const w = plain.length * approxPerChar;
+    return Math.min(1, max / w);
+  }
+
+  function renderSkullSVG(name, t){
+    const { base, ring, accent, band } = t;
+    const plain = name.split('(')[0].trim();
+    const s = nameScale(name);
+    return `
+    <svg viewBox="0 0 500 600" class="w-full h-auto">
+      <ellipse cx="250" cy="560" rx="160" ry="26" fill="#000" opacity=".25"/>
+      <path d="M250 40c-106 0-190 84-190 190 0 88 58 130 73 208 6 32 10 48 36 68 20 16 55 26 81 26s61-10 81-26c26-20 30-36 36-68 15-78 73-120 73-208 0-106-84-190-190-190z" fill="${base}" stroke="#111" stroke-width="6"/>
+      <g fill="none" stroke="#111" stroke-width="6" stroke-linecap="round">
+        <path d="M115 220c30-20 70-38 135-38s105 18 135 38"/>
+        <path d="M100 270c36-30 88-54 150-54s114 24 150 54"/>
+        <path d="M170 420c20 22 42 36 80 36s60-14 80-36"/>
+      </g>
+      <g>
+        <circle cx="170" cy="260" r="58" fill="#000" stroke="#111" stroke-width="6"/>
+        <circle cx="330" cy="260" r="58" fill="#000" stroke="#111" stroke-width="6"/>
+        <circle cx="170" cy="260" r="80" fill="none" stroke="${ring}" stroke-width="18"/>
+        <circle cx="330" cy="260" r="80" fill="none" stroke="${ring}" stroke-width="18"/>
+        <g>${petal(170,260,95,18,'var(--cempasuchil)')}</g>
+        <g>${petal(330,260,95,18,'var(--celosia)')}</g>
+        <g fill="#fff">
+          ${[170,330].map(c=>Array.from({length:12}).map((_,k)=>{const a=(Math.PI*2/12)*k; const x=c+Math.sin(a)*68; const y=260-Math.cos(a)*68; return `<circle r="5" cx="${x}" cy="${y}"/>`;}).join('')).join('')}
+        </g>
+      </g>
+      <path d="${nosePath(t.nose)}" fill="${accent}" stroke="#111" stroke-width="6"/>
+      <g fill="#fff" stroke="#111" stroke-width="5">
+        <rect x="160" y="380" width="180" height="46" rx="8"/>
+        <path d="M160 403h180"/>
+        <path d="M190 380v46"/><path d="M220 380v46"/><path d="M250 380v46"/>
+        <path d="M280 380v46"/><path d="M310 380v46"/>
+      </g>
+      <g class="name-band">
+        <path d="M120 170c60-22 200-22 260 0 10 4 10 20 0 24-60 22-200 22-260 0-10-4-10-20 0-24z" fill="${band}" stroke="#111" stroke-width="6"/>
+        <g transform="translate(250,190) scale(${s})">
+          <text x="0" y="0" text-anchor="middle" font-size="34" fill="#111">${plain}</text>
+        </g>
+      </g>
+      <g>
+        ${petal(250,120,34,12,'var(--cempasuchil)')}
+        <circle cx="250" cy="120" r="12" fill="var(--celosia)"/>
+      </g>
+      <g stroke="var(--verde)" stroke-width="8" fill="none">
+        <path d="M60 330c26-12 36-12 56 0"/>
+        <path d="M440 330c-26-12-36-12-56 0"/>
+      </g>
+    </svg>`;
+  }
+
+  function cardTemplate(p){
+    return `
+      <article class="relative group">
+        <div class="rounded-3xl p-4 sm:p-5 bg-white/5 border border-white/10 hover:border-white/20 transition">
+          ${renderSkullSVG(p.nombre, p.theme)}
+        </div>
+        <div class="pointer-events-none absolute inset-x-2 bottom-2 translate-y-2 opacity-0 group-hover:opacity-100 group-hover:translate-y-0 transition">
+          <div class="rounded-xl px-4 py-3 text-[13px] bg-black/70 border border-white/15 backdrop-blur">
+            <h3 class="title text-lg" style="color:var(--cempasuchil)">${p.nombre}</h3>
+            <p class="opacity-95">${p.bio}</p>
+            <p class="opacity-90 mt-1">• ${p.contrib}</p>
+          </div>
+        </div>
+      </article>`;
+  }
+
+  // Render grid
+  const skullGrid = document.getElementById('skullGrid');
+  skullGrid.innerHTML = mujeres.map(cardTemplate).join('');
+
+  // ---- Responsive builders (debounced; no ResizeObserver loops) ---------
+  let lastGWidth = 0, lastFWidth = 0;
+
+  function buildGarland(){
+    const host = document.getElementById('garlandHost');
+    const w = host.getBoundingClientRect().width || 1000; const h = 140;
+    if (Math.round(w) === Math.round(lastGWidth)) return; // avoid rebuilds with same width
+    lastGWidth = w;
+    host.innerHTML = '';
+    const colors = ['var(--papel-picado-rosa)','var(--papel-picado-azul)','var(--papel-picado-morado)','var(--papel-picado-verde)'];
+    const count = Math.max(3, Math.floor(w / 140));
+    const pw = Math.min(120, Math.max(70, Math.floor((w-40)/count) - 8));
+
+    const svg = document.createElementNS('http://www.w3.org/2000/svg','svg');
+    svg.setAttribute('viewBox',`0 0 ${w} ${h}`); svg.setAttribute('width','100%'); svg.setAttribute('height',h);
+    // invisible guide curve (no visible string)
+    const path = document.createElementNS(svg.namespaceURI,'path');
+    path.setAttribute('d',`M 20 40 Q ${w/2} 0 ${w-20} 40`);
+    path.setAttribute('fill','none'); path.setAttribute('stroke','none');
+    svg.appendChild(path);
+    const total = path.getTotalLength();
+
+    for(let i=0;i<count;i++){
+      const pt = path.getPointAtLength(total*(i+0.5)/count);
+      const g = document.createElementNS(svg.namespaceURI,'g');
+      g.setAttribute('transform',`translate(${pt.x-pw/2},${pt.y+18})`);
+      const rect = document.createElementNS(svg.namespaceURI,'rect');
+      rect.setAttribute('width',pw); rect.setAttribute('height',78); rect.setAttribute('rx',8);
+      rect.setAttribute('fill', colors[i%colors.length]);
+      g.appendChild(rect);
+      // perforaciones (layout proporcional a ancho)
+      for(let j=0;j<6;j++){
+        const c = document.createElementNS(svg.namespaceURI,'circle');
+        const column = j%3; const row = Math.floor(j/3);
+        c.setAttribute('cx', 16 + column*(pw/3)); c.setAttribute('cy', 28 + row*16); c.setAttribute('r', 4);
+        c.setAttribute('fill','rgba(0,0,0,.28)'); g.appendChild(c);
+      }
+      // festón inferior
+      const scallop = document.createElementNS(svg.namespaceURI,'path');
+      let d = ''; const scallops = Math.max(6, Math.floor(pw/18)); const step = pw/scallops;
+      for(let s=0;s<scallops;s++){ const cx = step*s + step/2; d += ` M ${cx} 78 a 7 7 0 1 0 0 0`; }
+      scallop.setAttribute('d', d.trim());
+      scallop.setAttribute('stroke','rgba(0,0,0,.28)'); scallop.setAttribute('fill','none'); scallop.setAttribute('stroke-width','8');
+      g.appendChild(scallop);
+      svg.appendChild(g);
+    }
+    host.appendChild(svg);
+  }
+
+  function buildMarigolds(){
+    const host = document.getElementById('flowerRow');
+    const w = host.getBoundingClientRect().width || 1000; const h = 60;
+    if (Math.round(w) === Math.round(lastFWidth)) return; // avoid rebuilds with same width
+    lastFWidth = w;
+    host.innerHTML = '';
+    const count = Math.max(6, Math.floor(w / 70));
+    const svg = document.createElementNS('http://www.w3.org/2000/svg','svg');
+    svg.setAttribute('viewBox',`0 0 ${w} ${h}`); svg.setAttribute('width','100%'); svg.setAttribute('height',h);
+    for(let i=0;i<count;i++){
+      const x = (w/(count+1))*(i+1); const y = h/2;
+      const g = document.createElementNS(svg.namespaceURI,'g');
+      g.setAttribute('transform',`translate(${x},${y})`);
+      g.innerHTML = `
+        <circle r="16" fill="#ffb703"/>
+        <circle r="12" fill="#ffa31a"/>
+        <circle r="7" fill="#ffe29a"/>
+        <circle r="3" fill="#fff"/>
+        <path d="M-22 18c12-6 20-6 32 0" stroke="var(--verde)" stroke-width="6" fill="none"/>
+      `;
+      svg.appendChild(g);
+    }
+    host.appendChild(svg);
+  }
+
+  // Debounce helper to avoid tight resize loops
+  function debounce(fn, ms){ let t; return (...args)=>{ clearTimeout(t); t = setTimeout(()=>fn.apply(null,args), ms); }; }
+
+  // initial build after layout, and debounced rebuilds on resize/orientation
+  function safeBuild(){ buildGarland(); buildMarigolds(); }
+  // Run once now and once after load to ensure correct widths
+  safeBuild();
+  window.addEventListener('load', safeBuild);
+  const rebuild = debounce(safeBuild, 150);
+  window.addEventListener('resize', rebuild, { passive: true });
+  window.addEventListener('orientationchange', rebuild, { passive: true });
+
+  // ------------------ Mini tests in console ------------------------------
+  try {
+    console.assert(typeof renderSkullSVG('Test', mujeres[0].theme) === 'string', 'renderSkullSVG returns string');
+    console.assert(nameScale('Ana') <= 1, 'nameScale short <=1');
+    console.assert(nameScale('Nombre Excesivamente Largo Para Probar Escalado') < 1, 'nameScale long <1');
+    console.assert(mujeres.length === 9, '9 women for 3×3 grid');
+    // New tests to ensure builders are idempotent
+    const gHost = document.getElementById('garlandHost');
+    const fHost = document.getElementById('flowerRow');
+    const gCountBefore = gHost.querySelectorAll('svg').length; safeBuild();
+    console.assert(gHost.querySelectorAll('svg').length === 1, 'garlandHost should contain exactly one SVG after rebuild');
+    console.assert(fHost.querySelectorAll('svg').length === 1, 'flowerRow should contain exactly one SVG after rebuild');
+  } catch (e) { console.warn('Self-tests failed:', e); }
+  </script>
+</body>
+</html>
